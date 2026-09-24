@@ -23,13 +23,13 @@ const appLayer = MonitorServiceLive.pipe(
 	Layer.provideMerge(InMemoryMonitorRepositoryLayer),
 );
 
-const makeMonitor = (id: string, displayName = "Effect") =>
+const makeMonitor = (id: string, displayName = "Effect", enabled = true) =>
 	Schema.decodeUnknownSync(Monitor)({
 		id,
 		source: "npm_package",
 		identifier: "effect",
 		displayName,
-		enabled: true,
+		enabled,
 		checkInterval: Duration.hours(6),
 		releaseAgeWindow: Duration.days(3),
 		includePrerelease: false,
@@ -129,6 +129,54 @@ it.effect("fails when removing a missing monitor", () =>
 	Effect.gen(function* () {
 		const service = yield* MonitorService;
 		const error = yield* Effect.flip(service.remove("missing-monitor"));
+
+		expect(error).toBeInstanceOf(MonitorNotFoundError);
+		expect(error._tag).toBe("MonitorNotFoundError");
+		expect(error.id).toBe("missing-monitor");
+	}).pipe(Effect.provide(appLayer)),
+);
+
+it.effect("pauses an existing monitor", () =>
+	Effect.gen(function* () {
+		const service = yield* MonitorService;
+
+		yield* service.create(makeMonitor("pause-monitor", "Pause", true));
+		const paused = yield* service.pause("pause-monitor");
+		const stored = Option.getOrThrow(yield* service.get("pause-monitor"));
+
+		expect(paused.enabled).toBe(false);
+		expect(stored.enabled).toBe(false);
+	}).pipe(Effect.provide(appLayer)),
+);
+
+it.effect("resumes a paused monitor", () =>
+	Effect.gen(function* () {
+		const service = yield* MonitorService;
+
+		yield* service.create(makeMonitor("resume-monitor", "Resume", false));
+		const resumed = yield* service.resume("resume-monitor");
+		const stored = Option.getOrThrow(yield* service.get("resume-monitor"));
+
+		expect(resumed.enabled).toBe(true);
+		expect(stored.enabled).toBe(true);
+	}).pipe(Effect.provide(appLayer)),
+);
+
+it.effect("fails when pausing a missing monitor", () =>
+	Effect.gen(function* () {
+		const service = yield* MonitorService;
+		const error = yield* Effect.flip(service.pause("missing-monitor"));
+
+		expect(error).toBeInstanceOf(MonitorNotFoundError);
+		expect(error._tag).toBe("MonitorNotFoundError");
+		expect(error.id).toBe("missing-monitor");
+	}).pipe(Effect.provide(appLayer)),
+);
+
+it.effect("fails when resuming a missing monitor", () =>
+	Effect.gen(function* () {
+		const service = yield* MonitorService;
+		const error = yield* Effect.flip(service.resume("missing-monitor"));
 
 		expect(error).toBeInstanceOf(MonitorNotFoundError);
 		expect(error._tag).toBe("MonitorNotFoundError");

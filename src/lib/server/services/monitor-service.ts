@@ -27,6 +27,12 @@ export class MonitorService extends Context.Service<
 		readonly get: (id: string) => Effect.Effect<Option.Option<MonitorValue>>;
 		readonly save: (monitor: MonitorValue) => Effect.Effect<void>;
 		readonly remove: (id: string) => Effect.Effect<void, MonitorNotFoundError>;
+		readonly pause: (
+			id: string,
+		) => Effect.Effect<MonitorValue, MonitorNotFoundError>;
+		readonly resume: (
+			id: string,
+		) => Effect.Effect<MonitorValue, MonitorNotFoundError>;
 	}
 >()("MonitorService") {}
 
@@ -34,6 +40,20 @@ export const MonitorServiceLive = Layer.effect(
 	MonitorService,
 	Effect.gen(function* () {
 		const repository = yield* MonitorRepository;
+
+		const setEnabled = (id: string, enabled: boolean) =>
+			Effect.gen(function* () {
+				const existing = yield* repository.get(id);
+
+				if (Option.isNone(existing)) {
+					return yield* new MonitorNotFoundError({ id });
+				}
+
+				const updated = { ...existing.value, enabled };
+
+				yield* repository.save(updated);
+				return updated;
+			});
 
 		return {
 			create: (monitor: MonitorValue) =>
@@ -71,6 +91,8 @@ export const MonitorServiceLive = Layer.effect(
 
 					yield* repository.remove(id);
 				}),
+			pause: (id: string) => setEnabled(id, false),
+			resume: (id: string) => setEnabled(id, true),
 		};
 	}),
 );
