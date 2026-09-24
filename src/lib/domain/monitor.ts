@@ -19,3 +19,5 @@ export const Monitor = Schema.Struct({
 	createdAt: Schema.DateTimeUtc,
 	lastCheckedAt: Schema.OptionFromOptional(Schema.DateTimeUtc),
 });
+
+export type MonitorValue = typeof Monitor.Type;

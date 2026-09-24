@@ -1,12 +1,10 @@
-import { Monitor } from "$lib/domain/monitor";
+import { type MonitorValue } from "$lib/domain/monitor";
 import { Context, Effect, Layer, Option } from "effect";
 import { MonitorRepository } from "../repositories/monitor-repository";
 import {
 	DuplicateMonitorError,
 	MonitorNotFoundError,
 } from "./monitor-service.errors";
-
-type MonitorValue = typeof Monitor.Type;
 
 export class MonitorService extends Context.Service<
 	MonitorService,
