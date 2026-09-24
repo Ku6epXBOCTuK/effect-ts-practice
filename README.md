@@ -1,45 +1,26 @@
-# sv
+# Release Radar
 
-Everything you need to build a Svelte project, powered by
-[`sv`](https://github.com/sveltejs/cli).
+Учебное приложение для отслеживания новых релизов npm-пакетов и
+GitHub-репозиториев с настраиваемым `minimum release age`.
 
-## Creating a project
+## Документация
 
-If you're seeing this, you've probably already done this step. Congrats!
+- [План продукта](docs/PLAN.md)
+- [Пошаговый учебный план](docs/IMPLEMENTATION.md)
 
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
+## Команды
 
 ```sh
-# recreate this project
-pnpm dlx sv@0.17.1 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" sveltekit-adapter="adapter:node" experimental="versions:kit+features:async,remoteFunctions,explicitEnvironmentVariables,handleRenderingErrors,forkPreloads" ai-tools="ide:opencode" paraglide="languageTags:en, ru+demo:no" --install pnpm .
+pnpm dev
+pnpm check
+pnpm lint
+pnpm test
+pnpm build
 ```
 
-## Developing
+`pnpm check` и `pnpm build` генерируют Paraglide перед запуском SvelteKit.
 
-Once you've created a project and installed dependencies with `npm install` (or
-`pnpm install` or `yarn`), start a development server:
+## Текущий этап
 
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an
-> [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+Сейчас подготовлен чистый SvelteKit-шаблон. Effect и остальные интеграции
+добавляются по этапам из `docs/IMPLEMENTATION.md`.
