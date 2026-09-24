@@ -62,3 +62,15 @@ it.effect("updates an existing monitor without creating a duplicate", () =>
 		expect(monitors[0]?.displayName).toBe("After");
 	}).pipe(Effect.provide(InMemoryMonitorRepositoryLayer)),
 );
+
+it.effect("removes an existing monitor", () =>
+	Effect.gen(function* () {
+		const repository = yield* MonitorRepository;
+
+		yield* repository.save(makeMonitor("monitor-1"));
+		yield* repository.remove("monitor-1");
+		const result = yield* repository.get("monitor-1");
+
+		expect(Option.isNone(result)).toBe(true);
+	}).pipe(Effect.provide(InMemoryMonitorRepositoryLayer)),
+);

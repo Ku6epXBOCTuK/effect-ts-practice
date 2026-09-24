@@ -9,6 +9,7 @@ export class MonitorRepository extends Context.Service<
 		readonly list: () => Effect.Effect<ReadonlyArray<MonitorValue>>;
 		readonly get: (id: string) => Effect.Effect<Option.Option<MonitorValue>>;
 		readonly save: (monitor: MonitorValue) => Effect.Effect<void>;
+		readonly remove: (id: string) => Effect.Effect<void>;
 	}
 >()("MonitorRepository") {}
 
@@ -24,6 +25,10 @@ export const InMemoryMonitorRepositoryLayer = Layer.sync(
 			save: (monitor: typeof Monitor.Type) =>
 				Effect.sync(() => {
 					store.set(monitor.id, monitor);
+				}),
+			remove: (id: string) =>
+				Effect.sync(() => {
+					store.delete(id);
 				}),
 		};
 	},

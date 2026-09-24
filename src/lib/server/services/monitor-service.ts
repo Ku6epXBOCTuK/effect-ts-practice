@@ -26,6 +26,7 @@ export class MonitorService extends Context.Service<
 		readonly list: () => Effect.Effect<ReadonlyArray<MonitorValue>>;
 		readonly get: (id: string) => Effect.Effect<Option.Option<MonitorValue>>;
 		readonly save: (monitor: MonitorValue) => Effect.Effect<void>;
+		readonly remove: (id: string) => Effect.Effect<void, MonitorNotFoundError>;
 	}
 >()("MonitorService") {}
 
@@ -60,6 +61,16 @@ export const MonitorServiceLive = Layer.effect(
 			list: repository.list,
 			get: repository.get,
 			save: repository.save,
+			remove: (id: string) =>
+				Effect.gen(function* () {
+					const existing = yield* repository.get(id);
+
+					if (Option.isNone(existing)) {
+						return yield* new MonitorNotFoundError({ id });
+					}
+
+					yield* repository.remove(id);
+				}),
 		};
 	}),
 );

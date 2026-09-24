@@ -113,6 +113,29 @@ it.effect("fails when updating a missing monitor", () =>
 	}).pipe(Effect.provide(appLayer)),
 );
 
+it.effect("removes an existing monitor", () =>
+	Effect.gen(function* () {
+		const service = yield* MonitorService;
+
+		yield* service.create(makeMonitor("remove-monitor"));
+		yield* service.remove("remove-monitor");
+		const result = yield* service.get("remove-monitor");
+
+		expect(Option.isNone(result)).toBe(true);
+	}).pipe(Effect.provide(appLayer)),
+);
+
+it.effect("fails when removing a missing monitor", () =>
+	Effect.gen(function* () {
+		const service = yield* MonitorService;
+		const error = yield* Effect.flip(service.remove("missing-monitor"));
+
+		expect(error).toBeInstanceOf(MonitorNotFoundError);
+		expect(error._tag).toBe("MonitorNotFoundError");
+		expect(error.id).toBe("missing-monitor");
+	}).pipe(Effect.provide(appLayer)),
+);
+
 it.effect("returns None when the service cannot find a monitor", () =>
 	Effect.gen(function* () {
 		const service = yield* MonitorService;
