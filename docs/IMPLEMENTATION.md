@@ -28,14 +28,14 @@
 - Svelte 5 в runes mode;
 - SvelteKit с TypeScript `strict`;
 - `adapter-node`;
-- Vitest с client и server projects;
+- Vitest для server/unit tests;
 - ESLint и Prettier;
 - Paraglide для `ru` и `en`;
 - `src/hooks.server.ts` для локализации;
 - базовая страница `src/routes/+page.svelte`.
 
-В `package.json` пока нет Effect. Не редактируй генерируемые файлы в
-`src/lib/paraglide` и `.svelte-kit`.
+В `package.json` уже установлен `effect@4.0.0-rc.117`. Не редактируй
+генерируемые файлы в `src/lib/paraglide` и `.svelte-kit`.
 
 Основные команды:
 
