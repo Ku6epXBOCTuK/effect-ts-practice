@@ -1,23 +1,15 @@
 import { expect, it } from "@effect/vitest";
-import {
-	DateTime,
-	Duration,
-	Effect,
-	Exit,
-	Layer,
-	Option,
-	Schema,
-} from "effect";
+import { DateTime, Duration, Effect, Layer, Option, Schema } from "effect";
 import { Monitor } from "../../domain/monitor";
 import {
 	InMemoryMonitorRepositoryLayer,
 	MonitorRepository,
 } from "../repositories/monitor-repository";
 import {
+	DuplicateMonitorError,
 	MonitorNotFoundError,
-	MonitorService,
-	MonitorServiceLive,
-} from "./monitor-service.ts";
+} from "./monitor-service.errors.ts";
+import { MonitorService, MonitorServiceLive } from "./monitor-service.ts";
 
 const appLayer = MonitorServiceLive.pipe(
 	Layer.provideMerge(InMemoryMonitorRepositoryLayer),
@@ -76,11 +68,13 @@ it.effect("creates a monitor only once", () =>
 		const monitor = makeMonitor("new-monitor", "New monitor");
 
 		const created = yield* service.create(monitor);
-		const duplicate = yield* Effect.exit(service.create(monitor));
+		const error = yield* Effect.flip(service.create(monitor));
 		const monitors = yield* service.list();
 
 		expect(created.id).toBe("new-monitor");
-		expect(Exit.isFailure(duplicate)).toBe(true);
+		expect(error).toBeInstanceOf(DuplicateMonitorError);
+		expect(error._tag).toBe("DuplicateMonitorError");
+		expect(error.id).toBe("new-monitor");
 		expect(monitors).toHaveLength(1);
 	}).pipe(Effect.provide(appLayer)),
 );

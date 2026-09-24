@@ -1,16 +1,10 @@
 import { Monitor } from "$lib/domain/monitor";
-import { Context, Effect, Layer, Option, Schema } from "effect";
+import { Context, Effect, Layer, Option } from "effect";
 import { MonitorRepository } from "../repositories/monitor-repository";
-
-export class DuplicateMonitorError extends Schema.TaggedError<DuplicateMonitorError>()(
-	"DuplicateMonitorError",
-	{ id: Schema.String },
-) {}
-
-export class MonitorNotFoundError extends Schema.TaggedError<MonitorNotFoundError>()(
-	"MonitorNotFoundError",
-	{ id: Schema.String },
-) {}
+import {
+	DuplicateMonitorError,
+	MonitorNotFoundError,
+} from "./monitor-service.errors";
 
 type MonitorValue = typeof Monitor.Type;
 
