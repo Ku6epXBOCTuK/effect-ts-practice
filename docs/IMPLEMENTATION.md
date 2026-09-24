@@ -180,8 +180,9 @@ src/lib/domain/
 
 ### Проверка
 
-Тесты заранее подготовлены в `src/lib/domain/release-age.test.ts`. Они задают
-контракт для `evaluateReleaseGate` и `ReleaseGateInput`.
+Тесты заранее подготовлены в `src/lib/domain/release-age.test.ts` и
+`src/lib/domain/monitor.test.ts`. Они задают контракт для `evaluateReleaseGate`,
+`ReleaseGateInput`, `Monitor` и `SourceKind`.
 
 Реализуй production-код так, чтобы прошли сценарии:
 
