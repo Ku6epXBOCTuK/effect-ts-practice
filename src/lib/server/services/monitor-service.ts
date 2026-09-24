@@ -7,6 +7,11 @@ export class DuplicateMonitorError extends Schema.TaggedError<DuplicateMonitorEr
 	{ id: Schema.String },
 ) {}
 
+export class MonitorNotFoundError extends Schema.TaggedError<MonitorNotFoundError>()(
+	"MonitorNotFoundError",
+	{ id: Schema.String },
+) {}
+
 type MonitorValue = typeof Monitor.Type;
 
 export class MonitorService extends Context.Service<
@@ -15,6 +20,9 @@ export class MonitorService extends Context.Service<
 		readonly create: (
 			monitor: MonitorValue,
 		) => Effect.Effect<MonitorValue, DuplicateMonitorError>;
+		readonly update: (
+			monitor: MonitorValue,
+		) => Effect.Effect<MonitorValue, MonitorNotFoundError>;
 		readonly list: () => Effect.Effect<ReadonlyArray<MonitorValue>>;
 		readonly get: (id: string) => Effect.Effect<Option.Option<MonitorValue>>;
 		readonly save: (monitor: MonitorValue) => Effect.Effect<void>;
@@ -33,6 +41,17 @@ export const MonitorServiceLive = Layer.effect(
 
 					if (Option.isSome(existing)) {
 						return yield* new DuplicateMonitorError({ id: monitor.id });
+					}
+					yield* repository.save(monitor);
+
+					return monitor;
+				}),
+			update: (monitor: MonitorValue) =>
+				Effect.gen(function* () {
+					const existing = yield* repository.get(monitor.id);
+
+					if (Option.isNone(existing)) {
+						return yield* new MonitorNotFoundError({ id: monitor.id });
 					}
 					yield* repository.save(monitor);
 

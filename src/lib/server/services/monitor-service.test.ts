@@ -13,7 +13,11 @@ import {
 	InMemoryMonitorRepositoryLayer,
 	MonitorRepository,
 } from "../repositories/monitor-repository";
-import { MonitorService, MonitorServiceLive } from "./monitor-service.ts";
+import {
+	MonitorNotFoundError,
+	MonitorService,
+	MonitorServiceLive,
+} from "./monitor-service.ts";
 
 const appLayer = MonitorServiceLive.pipe(
 	Layer.provideMerge(InMemoryMonitorRepositoryLayer),
@@ -78,6 +82,34 @@ it.effect("creates a monitor only once", () =>
 		expect(created.id).toBe("new-monitor");
 		expect(Exit.isFailure(duplicate)).toBe(true);
 		expect(monitors).toHaveLength(1);
+	}).pipe(Effect.provide(appLayer)),
+);
+
+it.effect("updates an existing monitor", () =>
+	Effect.gen(function* () {
+		const service = yield* MonitorService;
+		const original = makeMonitor("update-monitor", "Before update");
+		const updated = makeMonitor("update-monitor", "After update");
+
+		yield* service.create(original);
+		const result = yield* service.update(updated);
+		const stored = Option.getOrThrow(yield* service.get("update-monitor"));
+
+		expect(result).toEqual(updated);
+		expect(stored.displayName).toBe("After update");
+	}).pipe(Effect.provide(appLayer)),
+);
+
+it.effect("fails when updating a missing monitor", () =>
+	Effect.gen(function* () {
+		const service = yield* MonitorService;
+		const error = yield* Effect.flip(
+			service.update(makeMonitor("missing-monitor")),
+		);
+
+		expect(error).toBeInstanceOf(MonitorNotFoundError);
+		expect(error._tag).toBe("MonitorNotFoundError");
+		expect(error.id).toBe("missing-monitor");
 	}).pipe(Effect.provide(appLayer)),
 );
 
