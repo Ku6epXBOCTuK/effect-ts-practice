@@ -1,5 +1,13 @@
 import { expect, it } from "@effect/vitest";
-import { DateTime, Duration, Effect, Layer, Option, Schema } from "effect";
+import {
+	DateTime,
+	Duration,
+	Effect,
+	Exit,
+	Layer,
+	Option,
+	Schema,
+} from "effect";
 import { Monitor } from "../../domain/monitor";
 import {
 	InMemoryMonitorRepositoryLayer,
@@ -55,6 +63,21 @@ it.effect("delegates save and get to the repository", () =>
 
 		expect(stored.identifier).toBe("effect");
 		expect(stored.displayName).toBe("Effect");
+	}).pipe(Effect.provide(appLayer)),
+);
+
+it.effect("creates a monitor only once", () =>
+	Effect.gen(function* () {
+		const service = yield* MonitorService;
+		const monitor = makeMonitor("new-monitor", "New monitor");
+
+		const created = yield* service.create(monitor);
+		const duplicate = yield* Effect.exit(service.create(monitor));
+		const monitors = yield* service.list();
+
+		expect(created.id).toBe("new-monitor");
+		expect(Exit.isFailure(duplicate)).toBe(true);
+		expect(monitors).toHaveLength(1);
 	}).pipe(Effect.provide(appLayer)),
 );
 
