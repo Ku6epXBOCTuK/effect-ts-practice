@@ -1,6 +1,6 @@
-import { DateTime, Duration } from "effect";
 import { describe, expect, it } from "@effect/vitest";
-import { evaluateReleaseGate, type ReleaseGateInput } from "./release-age";
+import { DateTime, Duration } from "effect";
+import { evaluateReleaseGate, type ReleaseGateInput } from "./release-age.ts";
 
 const instant = (value: string): DateTime.Utc => DateTime.makeUnsafe(value);
 
