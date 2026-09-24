@@ -17,6 +17,7 @@
 		"test": "pnpm test:unit --run"
 	},
 	"devDependencies": {
+		"@effect/vitest": "4.0.0-rc.117",
 		"@eslint/js": "^10.0.1",
 		"@inlang/paraglide-js": "^2.18.2",
 		"@sveltejs/adapter-node": "5.5.7",
@@ -34,7 +35,7 @@
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.60.1",
 		"vite": "^8.0.16",
-		"vitest": "^4.1.8"
+		"vitest": "^5.0.1"
 	},
 	"dependencies": {
 		"effect": "4.0.0-rc.117"
