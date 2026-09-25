@@ -1,5 +1,6 @@
 import { Monitor, SOURCE_KIND } from "$lib/domain/monitor";
 import { DateTime, Duration, Effect, Schema } from "effect";
+import { InvalidPackageNameError } from "./monitor-commands.errors";
 import { MonitorService } from "./services/monitor-service";
 
 // Defaults и createdAt должны жить в команде: source=npm_package, identifier=packageName,
@@ -10,7 +11,7 @@ export const createNpmMonitor = (packageName: unknown) =>
 	Effect.gen(function* () {
 		const name = yield* Schema.decodeUnknownEffect(Schema.NonEmptyString)(
 			packageName,
-		);
+		).pipe(Effect.mapError(() => new InvalidPackageNameError()));
 
 		const service = yield* MonitorService;
 		const createdAt = yield* DateTime.now;
