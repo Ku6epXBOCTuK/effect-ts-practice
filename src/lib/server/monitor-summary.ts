@@ -1,11 +1,9 @@
 import { type MonitorValue } from "$lib/domain/monitor";
+import type { MonitorSummary } from "$lib/domain/monitor-summary";
 import { Effect } from "effect";
 import { MonitorService } from "./services/monitor-service";
 
-export type MonitorSummary = Pick<
-	MonitorValue,
-	"id" | "source" | "identifier" | "displayName" | "enabled"
->;
+export type { MonitorSummary } from "$lib/domain/monitor-summary";
 
 const toMonitorSummary = (monitor: MonitorValue): MonitorSummary => ({
 	id: monitor.id,

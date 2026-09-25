@@ -1,4 +1,20 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"app_name": "Release Radar"
+	"app_name": "Release Radar",
+	"page_description": "Track npm packages and GitHub releases with a release age gate.",
+	"watchlist_title": "Your watchlist",
+	"watchlist_description": "Keep an eye on the packages and repositories you follow.",
+	"add_monitor": "Add npm package",
+	"add_monitor_description": "Start with a package name. You can adjust its settings later.",
+	"package_name": "Package name",
+	"package_name_placeholder": "effect",
+	"add": "Add",
+	"error_invalid_package_name": "Enter a package name to continue.",
+	"error_duplicate_monitor": "This package is already in your watchlist.",
+	"error_internal": "Something went wrong. Please try again.",
+	"status_active": "Active",
+	"status_paused": "Paused",
+	"check_now": "Check now",
+	"empty_watchlist_title": "Your watchlist is empty",
+	"empty_watchlist_description": "Add an npm package above to start tracking releases."
 }

@@ -338,6 +338,29 @@ watchlist.
 Svelte UI хранит только presentation state. Данные и orchestration остаются на
 сервере.
 
+### Учебная очередь
+
+Сейчас написать самостоятельно:
+
+1. В `src/lib/components/monitor-form/MonitorForm.svelte` добавить состояние
+   отправки через SvelteKit `use:enhance` и `$state`: повторная отправка
+   блокируется, кнопка получает disabled/pending-state, серверная ошибка из
+   `form` остаётся видимой.
+2. Не переносить `Effect`, `MonitorService` или `appRuntime` в браузерные
+   компоненты. В браузере только presentation state и SvelteKit transitions.
+3. `MonitorList.svelte` пока оставить без собственного Effect: он получает
+   `monitors` prop и отвечает за empty/list presentation.
+4. `MonitorListItem.svelte` пока оставить `Check now` disabled. Реализацию check
+   action отложить до появления npm adapter и server-side команды.
+
+Критерий этого шага: форма не создаёт повторный запрос, все error codes имеют
+текст, UI не импортирует server modules, а `pnpm check`, `pnpm lint` и
+`pnpm test` проходят.
+
+Следующий Effect-этап после этого: сначала написать интерфейс и fake Layer для
+`NpmRegistry`, затем тесты на `getPackageMetadata`, и только после этого
+подключать реальный HTTP.
+
 ### Локализация
 
 Добавляй видимые строки в:
