@@ -267,6 +267,27 @@ Effect и заменяемый repository.
 Показать пользователю один реальный сценарий: добавить npm-пакет и увидеть его в
 watchlist.
 
+### Перед form action: команда создания
+
+Форма передаёт только `packageName`; это не готовое значение `Monitor`. Перед
+реализацией `+page.server.ts` определить application-команду `createNpmMonitor`,
+которая создаёт полноценный `Monitor` и вызывает `MonitorService.create`.
+
+Для первого vertical slice:
+
+- `source = "npm_package"`;
+- `identifier = packageName`;
+- `displayName = packageName` до появления отдельного поля редактирования;
+- `enabled = true`;
+- `checkInterval` — явный default (текущий рабочий вариант: 6 часов);
+- `releaseAgeWindow = 72 часа` согласно Release Gate;
+- `includePrerelease = false`;
+- `lastCheckedAt = Option.none()`;
+- `id = "npm:" + packageName` для MVP;
+- `createdAt` получать через `DateTime.now`/Clock, а не через браузер.
+
+Пока эти правила не зафиксированы в команде, form action писать рано.
+
 ### Что изучаешь
 
 - `+page.server.ts`;

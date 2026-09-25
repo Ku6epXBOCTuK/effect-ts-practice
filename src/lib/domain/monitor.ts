@@ -3,7 +3,7 @@ import { Schema } from "effect";
 export const SOURCE_KIND = {
 	NPM_PACKAGE: "npm_package",
 	GITHUB_REPO: "github_repo",
-};
+} as const;
 
 export const SourceKind = Schema.Literals(["npm_package", "github_repo"]);
 
