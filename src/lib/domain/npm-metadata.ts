@@ -14,3 +14,5 @@ export const NpmMetadata = Schema.Struct({
 	repositoryUrl: Schema.String,
 	npmUrl: Schema.String,
 });
+
+export type NpmMetadataValue = typeof NpmMetadata.Type;
