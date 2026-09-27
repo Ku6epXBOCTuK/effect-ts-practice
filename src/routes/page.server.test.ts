@@ -31,6 +31,20 @@ const makeCreateEvent = (packageName: string) => {
 	} as Parameters<NonNullable<typeof actions>["create"]>[0];
 };
 
+const makeCheckEvent = (id: string | null) => {
+	const formData = new FormData();
+	if (id !== null) {
+		formData.set("id", id);
+	}
+
+	return {
+		request: new Request("http://localhost/?/check", {
+			method: "POST",
+			body: formData,
+		}),
+	} as Parameters<NonNullable<typeof actions>["check"]>[0];
+};
+
 it("loads monitor summaries through the shared app runtime", async () => {
 	const id = `page-load-${Date.now()}`;
 
@@ -96,6 +110,39 @@ it("returns a conflict for a duplicate package monitor", async () => {
 		expect(result.data).toEqual({
 			code: "duplicate_monitor",
 			id: `npm:${packageName}`,
+		});
+	}
+});
+
+it("returns an invalid id failure for a missing check id", async () => {
+	const result = await actions.check(makeCheckEvent(null));
+
+	expect(isActionFailure(result)).toBe(true);
+	if (isActionFailure(result)) {
+		expect(result.status).toBe(400);
+		expect(result.data).toEqual({ code: "invalid_monitor_id" });
+	}
+});
+
+it("returns an invalid id failure for an empty check id", async () => {
+	const result = await actions.check(makeCheckEvent(""));
+
+	expect(isActionFailure(result)).toBe(true);
+	if (isActionFailure(result)) {
+		expect(result.status).toBe(400);
+		expect(result.data).toEqual({ code: "invalid_monitor_id" });
+	}
+});
+
+it("returns a not_found failure for an unknown monitor", async () => {
+	const result = await actions.check(makeCheckEvent("missing-action-monitor"));
+
+	expect(isActionFailure(result)).toBe(true);
+	if (isActionFailure(result)) {
+		expect(result.status).toBe(404);
+		expect(result.data).toEqual({
+			code: "monitor_not_found",
+			id: "missing-action-monitor",
 		});
 	}
 });

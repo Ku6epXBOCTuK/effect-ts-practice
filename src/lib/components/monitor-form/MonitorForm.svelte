@@ -4,6 +4,7 @@
 
 	interface FormState {
 		readonly code?: string;
+		readonly success?: boolean;
 	}
 
 	interface Props {

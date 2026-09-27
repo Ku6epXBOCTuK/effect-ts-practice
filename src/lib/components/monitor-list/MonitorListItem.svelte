@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { enhance } from "$app/forms";
 	import { m } from "$lib/paraglide/messages";
 	import type { MonitorSummary } from "$lib/domain/monitor-summary";
 
 	let { monitor }: { monitor: MonitorSummary } = $props();
+	let pending = $state(false);
 </script>
 
 <li class:paused={!monitor.enabled} class="monitor-item">
@@ -19,9 +21,27 @@
 		</div>
 		<p class="monitor-identifier">{monitor.identifier}</p>
 	</div>
-	<button class="secondary-button" type="button" disabled>
-		{m.check_now()}
-	</button>
+	<form
+		class="check-form"
+		method="POST"
+		action="?/check"
+		use:enhance={() => {
+			pending = true;
+
+			return async ({ update }) => {
+				try {
+					await update();
+				} finally {
+					pending = false;
+				}
+			};
+		}}
+	>
+		<input type="hidden" name="id" value={monitor.id} />
+		<button class="secondary-button" type="submit" disabled={pending}>
+			{m.check_now()}
+		</button>
+	</form>
 </li>
 
 <style>
@@ -42,6 +62,10 @@
 
 	.monitor-details {
 		min-width: 0;
+	}
+
+	.check-form {
+		margin: 0;
 	}
 
 	.monitor-title-row {
