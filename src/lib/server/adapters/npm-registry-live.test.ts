@@ -62,6 +62,44 @@ const notFoundAppLayer = NpmRegistryLive.pipe(
 	Layer.provide(NotFoundHttpClientLayer),
 );
 
+const ServerErrorHttpClientLayer = Layer.succeed(
+	HttpClient.HttpClient,
+	HttpClient.make((request) =>
+		Effect.succeed(
+			HttpClientResponse.fromWeb(
+				request,
+				new Response(JSON.stringify({ error: "Service unavailable" }), {
+					status: 503,
+					headers: { "content-type": "application/json" },
+				}),
+			),
+		),
+	),
+);
+
+const serverErrorAppLayer = NpmRegistryLive.pipe(
+	Layer.provide(ServerErrorHttpClientLayer),
+);
+
+const MalformedHttpClientLayer = Layer.succeed(
+	HttpClient.HttpClient,
+	HttpClient.make((request) =>
+		Effect.succeed(
+			HttpClientResponse.fromWeb(
+				request,
+				new Response(JSON.stringify({ name: "effect" }), {
+					status: 200,
+					headers: { "content-type": "application/json" },
+				}),
+			),
+		),
+	),
+);
+
+const malformedAppLayer = NpmRegistryLive.pipe(
+	Layer.provide(MalformedHttpClientLayer),
+);
+
 it.effect("fetches and maps npm metadata through HttpClient", () =>
 	Effect.gen(function* () {
 		const registry = yield* NpmRegistry;
@@ -88,4 +126,26 @@ it.effect("maps a 404 response to a typed not_found error", () =>
 		expect(error._tag).toBe("NpmRegistryError");
 		expect(error.code).toBe("not_found");
 	}).pipe(Effect.provide(notFoundAppLayer)),
+);
+
+it.effect("maps a server error to a typed unknown error", () =>
+	Effect.gen(function* () {
+		const registry = yield* NpmRegistry;
+		const error = yield* Effect.flip(registry.getPackageMetadata("effect"));
+
+		expect(error).toBeInstanceOf(NpmRegistryError);
+		expect(error._tag).toBe("NpmRegistryError");
+		expect(error.code).toBe("unknown");
+	}).pipe(Effect.provide(serverErrorAppLayer)),
+);
+
+it.effect("maps a malformed response to a typed unknown error", () =>
+	Effect.gen(function* () {
+		const registry = yield* NpmRegistry;
+		const error = yield* Effect.flip(registry.getPackageMetadata("effect"));
+
+		expect(error).toBeInstanceOf(NpmRegistryError);
+		expect(error._tag).toBe("NpmRegistryError");
+		expect(error.code).toBe("unknown");
+	}).pipe(Effect.provide(malformedAppLayer)),
 );
