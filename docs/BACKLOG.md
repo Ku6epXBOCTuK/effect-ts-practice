@@ -23,7 +23,7 @@
       тест)
 - [x] 1.2 в `check-monitor.ts` перестать терять результат: взять latest
       version + publishedAt, построить `Release`
-- [ ] 1.3 хранить `lastRelease` у монитора (пока in-memory)
+- [x] 1.3 хранить `lastRelease` у монитора (пока in-memory)
 - [ ] 1.4 прогнать релиз через `evaluateReleaseGate` → статус + `eligibleAt`
 - [ ] 1.5 показать в `MonitorListItem`: версию, `publishedAt`, статус
       (`cooling_down`/`ready`/`date_unknown`), дату `eligibleAt`

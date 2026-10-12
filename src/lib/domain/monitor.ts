@@ -1,4 +1,5 @@
 import { Schema } from "effect";
+import { Release } from "./release.ts";
 
 export const SOURCE_KIND = {
 	NPM_PACKAGE: "npm_package",
@@ -18,6 +19,7 @@ export const Monitor = Schema.Struct({
 	includePrerelease: Schema.Boolean,
 	createdAt: Schema.DateTimeUtc,
 	lastCheckedAt: Schema.OptionFromOptional(Schema.DateTimeUtc),
+	lastRelease: Schema.OptionFromOptional(Release),
 });
 
 export type MonitorValue = typeof Monitor.Type;

@@ -1,4 +1,5 @@
 import type { MonitorValue } from "$lib/domain/monitor";
+import { toRelease } from "$lib/domain/release";
 import { DateTime, Effect, Option } from "effect";
 import { NpmRegistry } from "./adapters/npm-registry";
 import type { NpmRegistryError } from "./adapters/npm-registry.errors";
@@ -24,11 +25,13 @@ export const checkMonitorNow = (
 
 		const monitor = result.value;
 
-		yield* registry.getPackageMetadata(monitor.identifier);
+		const metadata = yield* registry.getPackageMetadata(monitor.identifier);
+		const lastRelease = toRelease(metadata);
 
 		const now = yield* DateTime.now;
 		const updated: MonitorValue = {
 			...monitor,
+			lastRelease: Option.some(lastRelease),
 			lastCheckedAt: Option.some(now),
 		};
 

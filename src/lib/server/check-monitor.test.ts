@@ -78,6 +78,23 @@ it.effect("checks an existing monitor and stores the check time", () =>
 	}).pipe(Effect.provide(appLayer)),
 );
 
+it.effect("stores the latest release after a successful check", () =>
+	Effect.gen(function* () {
+		const repository = yield* MonitorRepository;
+		requestedPackageName = undefined;
+		yield* repository.save(makeMonitor("check-monitor"));
+
+		const monitor = yield* checkMonitorNow("check-monitor");
+
+		const stored = yield* repository.get("check-monitor");
+		const saved = Option.getOrThrow(stored);
+		const release = Option.getOrUndefined(saved.lastRelease);
+
+		expect(release?.version).toBe("4.0.0");
+		expect(monitor.lastCheckedAt).toBeDefined();
+	}).pipe(Effect.provide(appLayer)),
+);
+
 it.effect("does not call the registry for a missing monitor", () =>
 	Effect.gen(function* () {
 		requestedPackageName = undefined;
