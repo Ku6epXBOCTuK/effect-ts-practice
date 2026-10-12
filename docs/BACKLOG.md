@@ -19,7 +19,7 @@
 
 Сейчас проверка тянет данные из npm и выбрасывает их. Сделай видимый результат.
 
-- [ ] 1.1 `release.ts`: тип `Release` — version, publishedAt, url (Schema +
+- [x] 1.1 `release.ts`: тип `Release` — version, publishedAt, url (Schema +
       тест)
 - [ ] 1.2 в `check-monitor.ts` перестать терять результат: взять latest
       version + publishedAt, построить `Release`
