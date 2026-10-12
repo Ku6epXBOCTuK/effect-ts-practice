@@ -21,7 +21,7 @@
 
 - [x] 1.1 `release.ts`: тип `Release` — version, publishedAt, url (Schema +
       тест)
-- [ ] 1.2 в `check-monitor.ts` перестать терять результат: взять latest
+- [x] 1.2 в `check-monitor.ts` перестать терять результат: взять latest
       version + publishedAt, построить `Release`
 - [ ] 1.3 хранить `lastRelease` у монитора (пока in-memory)
 - [ ] 1.4 прогнать релиз через `evaluateReleaseGate` → статус + `eligibleAt`

@@ -1,4 +1,4 @@
-import { Schema } from "effect";
+import { Option, Schema } from "effect";
 import type { NpmMetadataValue } from "./npm-metadata.ts";
 
 /**
@@ -14,11 +14,20 @@ export const Release = Schema.Struct({
 
 export type ReleaseValue = typeof Release.Type;
 
-// TODO(student): реализуй маппинг NpmMetadataValue -> ReleaseValue.
-// 1) версия берётся из metadata.distTags.latest;
-// 2) найди объект этой версии в metadata.versions и забери его publishedAt;
-// 3) url = metadata.npmUrl;
-// 4) если версия или её дата не найдены — publishedAt остаётся None.
 export const toRelease = (metadata: NpmMetadataValue): ReleaseValue => {
-	throw new Error("not implemented");
+	const latest = metadata.distTags.latest;
+	const latestData = metadata.versions.find((data) => data.version === latest);
+	if (latestData === undefined) {
+		return {
+			version: latest,
+			publishedAt: Option.none(),
+			url: metadata.npmUrl,
+		};
+	}
+
+	return {
+		version: metadata.distTags.latest,
+		publishedAt: latestData.publishedAt,
+		url: metadata.npmUrl,
+	};
 };

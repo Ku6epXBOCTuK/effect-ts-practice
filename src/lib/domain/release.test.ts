@@ -12,15 +12,21 @@ const baseRelease = {
 
 const makeMetadata = (overrides: {
 	distTags?: Record<string, string>;
-	versions?: ReadonlyArray<{ version: string; publishedAt?: string }>;
+	versions?: ReadonlyArray<{ version: string; publishedAt?: DateTime.Utc }>;
 	npmUrl?: string;
 }): NpmMetadataValue => {
 	const value = Schema.decodeUnknownSync(NpmMetadata)({
 		name: "effect",
 		distTags: overrides.distTags ?? { latest: "4.0.0" },
 		versions: overrides.versions ?? [
-			{ version: "4.0.0", publishedAt: "2026-09-24T10:00:00Z" },
-			{ version: "3.19.0", publishedAt: "2024-01-01T00:00:00Z" },
+			{
+				version: "4.0.0",
+				publishedAt: DateTime.makeUnsafe("2026-09-24T10:00:00Z"),
+			},
+			{
+				version: "3.19.0",
+				publishedAt: DateTime.makeUnsafe("2024-01-01T00:00:00Z"),
+			},
 		],
 		repositoryUrl: "https://github.com/Effect-TS/effect",
 		npmUrl: overrides.npmUrl ?? "https://www.npmjs.com/package/effect",
@@ -92,7 +98,12 @@ it("marks publishedAt as none when the latest version is missing", () => {
 	const release = toRelease(
 		makeMetadata({
 			distTags: { latest: "9.9.9" },
-			versions: [{ version: "4.0.0", publishedAt: "2026-09-24T10:00:00Z" }],
+			versions: [
+				{
+					version: "4.0.0",
+					publishedAt: DateTime.makeUnsafe("2026-09-24T10:00:00Z"),
+				},
+			],
 		}),
 	);
 
