@@ -3,10 +3,17 @@
 	import type { MonitorSummary } from "$lib/domain/monitor-summary";
 	import MonitorListItem from "./MonitorListItem.svelte";
 
+	interface CheckFormState {
+		readonly code?: string;
+		readonly id?: string;
+	}
+
 	let {
 		monitors,
+		form,
 	}: {
 		monitors: ReadonlyArray<MonitorSummary>;
+		form?: CheckFormState | null;
 	} = $props();
 </script>
 
@@ -27,7 +34,7 @@
 	{:else}
 		<ul class="monitor-list">
 			{#each monitors as monitor (monitor.id)}
-				<MonitorListItem {monitor} />
+				<MonitorListItem {monitor} {form} />
 			{/each}
 		</ul>
 	{/if}

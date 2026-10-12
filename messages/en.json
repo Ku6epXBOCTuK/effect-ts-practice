@@ -12,6 +12,8 @@
 	"error_invalid_package_name": "Enter a package name to continue.",
 	"error_duplicate_monitor": "This package is already in your watchlist.",
 	"error_internal": "Something went wrong. Please try again.",
+	"error_monitor_not_found": "This monitor no longer exists.",
+	"error_check_failed": "The release check failed. Please try again.",
 	"status_active": "Active",
 	"status_paused": "Paused",
 	"check_now": "Check now",

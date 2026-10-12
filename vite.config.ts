@@ -1,3 +1,4 @@
+import { svelteTesting } from "@testing-library/svelte/vite";
 import { paraglideVitePlugin } from "@inlang/paraglide-js";
 import adapter from "@sveltejs/adapter-node";
 import { sveltekit } from "@sveltejs/kit/vite";
@@ -17,10 +18,11 @@ export default defineConfig({
 			outdir: "./src/lib/paraglide",
 			emitTsDeclarations: true,
 		}),
+		svelteTesting(),
 	],
 	test: {
 		passWithNoTests: true,
-		environment: "node",
+		environment: "jsdom",
 		expect: { requireAssertions: true },
 		include: ["src/**/*.{test,spec}.{js,ts}"],
 		exclude: ["src/**/*.svelte.{test,spec}.{js,ts}"],

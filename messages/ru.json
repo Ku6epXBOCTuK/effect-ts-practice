@@ -12,6 +12,8 @@
 	"error_invalid_package_name": "Введи имя пакета, чтобы продолжить.",
 	"error_duplicate_monitor": "Этот пакет уже есть в твоём watchlist.",
 	"error_internal": "Что-то пошло не так. Попробуй ещё раз.",
+	"error_monitor_not_found": "Этот монитор больше не существует.",
+	"error_check_failed": "Не удалось проверить релиз. Попробуй ещё раз.",
 	"status_active": "Активен",
 	"status_paused": "На паузе",
 	"check_now": "Проверить сейчас",

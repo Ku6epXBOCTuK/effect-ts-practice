@@ -20,7 +20,7 @@
 
 	<div class="content-stack">
 		<MonitorForm {form} />
-		<MonitorList monitors={data.monitors} />
+		<MonitorList monitors={data.monitors} {form} />
 	</div>
 </main>
 

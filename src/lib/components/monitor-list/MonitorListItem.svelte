@@ -3,7 +3,18 @@
 	import { m } from "$lib/paraglide/messages";
 	import type { MonitorSummary } from "$lib/domain/monitor-summary";
 
-	let { monitor }: { monitor: MonitorSummary } = $props();
+	interface CheckFormState {
+		readonly code?: string;
+		readonly id?: string;
+	}
+
+	let {
+		monitor,
+		form,
+	}: {
+		monitor: MonitorSummary;
+		form?: CheckFormState | null;
+	} = $props();
 	let pending = $state(false);
 </script>
 
@@ -42,6 +53,13 @@
 			{m.check_now()}
 		</button>
 	</form>
+	{#if form?.code && form.id === monitor.id}
+		<p class="check-error" role="alert">
+			{form.code === "monitor_not_found"
+				? m.error_monitor_not_found()
+				: m.error_check_failed()}
+		</p>
+	{/if}
 </li>
 
 <style>
@@ -66,6 +84,14 @@
 
 	.check-form {
 		margin: 0;
+	}
+
+	.check-error {
+		margin: 0;
+		color: #9b1c1c;
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		text-align: right;
 	}
 
 	.monitor-title-row {
